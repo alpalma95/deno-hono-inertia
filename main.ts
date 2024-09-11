@@ -5,23 +5,23 @@ import { serveStatic } from "@hono/hono/deno";
 interface InertiaInterface {
   template: string | null;
   url: string;
-  data: { 
-     component: string,
-     props: Record<string, unknown>,
-     url: string,
-     version: string,
-   },
+  data: {
+    component: string;
+    props: Record<string, unknown>;
+    url: string;
+    version: string;
+  };
   transform: <T>() => string;
-  render: (<T>(component: string, props: T) => Response);
+  render: <T>(component: string, props: T) => Response;
 }
 
 const IntertiaHeaders = {
-    INERTIA: "X-Inertia",
-    INERTIA_VERSION: "X-Inertia-Version",
-    INERTIA_LOCATION: "X-Inertia-Location",
-    INERTIA_PARTIAL_DATA: "X-Inertia-Partial-Data",
-    INERTIA_PARTIAL_COMPONENT: "X-Inertia-Partial-Component",
-}
+  INERTIA: "X-Inertia",
+  INERTIA_VERSION: "X-Inertia-Version",
+  INERTIA_LOCATION: "X-Inertia-Location",
+  INERTIA_PARTIAL_DATA: "X-Inertia-Partial-Data",
+  INERTIA_PARTIAL_COMPONENT: "X-Inertia-Partial-Component",
+};
 
 type IntertiaHeaders = typeof IntertiaHeaders;
 
@@ -32,7 +32,7 @@ const Inertia: InertiaInterface = {
     component: "",
     props: {},
     url: "",
-    version: "xxxx"
+    version: "xxxx",
   },
   transform<T>(): string {
     // Keeping it in a separate method in case we need to complicate it further
@@ -48,7 +48,6 @@ const Inertia: InertiaInterface = {
 // Inertia middleware
 const InertiaMiddleware = createMiddleware(async (c, next) => {
   Inertia.url = new URL(c.req.url).pathname;
-  
 
   /**
    * Template will always be the same (at least for now).
@@ -58,31 +57,31 @@ const InertiaMiddleware = createMiddleware(async (c, next) => {
    * we don't want to load the template.
    * 2) This allows us to potentially load a different template depending on the request.
    */
-  Inertia.template ??= await Deno.readTextFile("./views/index.dev.html");
-  
-  Inertia.render = <T>(component: string, props: T): Response => {
+  const templatePath = Deno.env.get("BUILD_ENV") === "prod"
+    ? "./public/index.html"
+    : "./resources/index.dev.html";
+  Inertia.template ??= await Deno.readTextFile(templatePath);
 
+  Inertia.render = <T>(component: string, props: T): Response => {
     Inertia.data = {
       url: Inertia.url,
       component,
       props: props as Record<string, unknown>,
-      version: "xxxx"
-    }
-    
+      version: "xxxx",
+    };
+
     if (c.req.header(IntertiaHeaders.INERTIA)) {
       c.header(IntertiaHeaders.INERTIA, "true");
-      return c.json({ ...Inertia.data })
+      return c.json({ ...Inertia.data });
     }
     const template = Inertia.transform();
     return c.html(template);
-  },
-
-  await next();
+  }, await next();
 });
 
 const app = new Hono();
 
-app.use(InertiaMiddleware)
+app.use(InertiaMiddleware);
 
 app.get("/", () => {
   return Inertia.render("Index", { pageName: "Home page" });
@@ -97,3 +96,4 @@ app.get("/about", () => {
 app.use("*", serveStatic({ root: "./public" }));
 
 Deno.serve(app.fetch);
+console.log(Deno.env.get("BUILD_ENV"));
