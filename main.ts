@@ -1,4 +1,4 @@
-import { Context, Hono } from "@hono/hono";
+import { Hono } from "@hono/hono";
 import { createMiddleware } from "@hono/hono/factory";
 import { serveStatic } from "@hono/hono/deno";
 
