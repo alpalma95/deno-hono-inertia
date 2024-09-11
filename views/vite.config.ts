@@ -7,5 +7,8 @@ export default defineConfig({
   server: {
     strictPort: true,
     origin: 'http://localhost:8000'
+  },
+  rollupOptions: {
+    outDir: '../public'
   }
 })

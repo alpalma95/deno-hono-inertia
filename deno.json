@@ -2,7 +2,8 @@
   "tasks": {
     "client": "pnpm --prefix ./views run dev",
     "server": "deno run -A --watch main.ts",
-    "dev": "(trap 'kill 0' SIGINT; deno task client & deno task server & wait)"
+    "dev": "(trap 'kill 0' SIGINT; deno task client & deno task server & wait)",
+    "build": "pnpm --prefix ./views build"
   },
   "imports": {
     "@hono/hono": "jsr:@hono/hono@^4.5.11",
