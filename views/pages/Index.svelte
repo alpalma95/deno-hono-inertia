@@ -1,20 +1,26 @@
 <script lang="ts">
+  import { inertia } from '@inertiajs/svelte'
   import Counter from '../lib/Counter.svelte'
-  export let foo: string
+  export let pageName: string
 </script>
+
+<svelte:head>
+  <title>Hono 🔥</title>
+</svelte:head>
 
 <main>
   <div>
     <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-      <img src="/public/vite.svg" class="logo" alt="Vite Logo" />
+      <img src="/vite.svg" class="logo" alt="Vite Logo" />
     </a>
     <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src="/public/assets/svelte.svg" class="logo svelte" alt="Svelte Logo" />
+      <img src="/assets/svelte.svg" class="logo svelte" alt="Svelte Logo" />
     </a>
   </div>
-  <h1>Vite + Svelte + Hono {foo}</h1>
+  <h1>Vite + Svelte + Hono {pageName}</h1>
 
   <div class="card">
+    <a href="/about" use:inertia>Go to About</a>
     <Counter />
   </div>
 
