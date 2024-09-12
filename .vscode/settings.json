@@ -1,0 +1,5 @@
+{
+    "deno.enablePaths": ["./boostrap", "./app", "./routes", "./server.ts"],
+    "deno.cacheOnSave": true,
+    "deno.config": "./deno.json"
+}

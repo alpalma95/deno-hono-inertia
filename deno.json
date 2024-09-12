@@ -1,12 +1,15 @@
 {
+  "exclude": ["./resources"],
+  "enablePaths": ["."],
   "tasks": {
+    "install": "pnpm --prefix ./resources install",
     "client": "pnpm --prefix ./resources run dev",
-    "server": "deno run -A --watch --env main.ts",
+    "server": "deno run -A --watch --env server.ts",
     "dev": "(trap 'kill 0' SIGINT; deno task client & deno task server & wait)",
     "build": "pnpm --prefix ./resources build"
   },
   "imports": {
-    "@hono/hono": "jsr:@hono/hono@^4.5.11",
+    "@hono/hono": "jsr:@hono/hono@^4.6.1",
     "@std/assert": "jsr:@std/assert@1"
   }
 }

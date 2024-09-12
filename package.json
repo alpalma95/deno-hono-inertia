@@ -1,0 +1,7 @@
+{
+  "name": "resources",
+  "type": "module",
+  "workspaces": [
+    "./resources"
+  ]
+}
