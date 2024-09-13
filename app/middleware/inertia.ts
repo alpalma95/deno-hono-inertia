@@ -35,9 +35,9 @@ export const Inertia: InertiaInterface = {
     transform(): string {
         // Keeping it in a separate method in case we need to complicate it further
         const data = JSON.stringify({ ...this.data });
-        const template = this.template!.replace("{{data}}", data);
+        let template = this.template!.replace("{{data}}", data);
 
-        Deno.env.get("BUILD_ENV") !== 'prod' && template.replace(
+        if (Deno.env.get("BUILD_ENV") !== 'prod') template = template.replace(
                 '<script type="module" src="/js/main.ts"></script>',
                 "",
             ).replace(
