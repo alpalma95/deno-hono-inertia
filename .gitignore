@@ -1,6 +1,6 @@
 /resources/node_modules/
-/public/index.html
-/public/assets/
+/public/app.html
+/public/dist_assets/
 
 
 .nx/cache

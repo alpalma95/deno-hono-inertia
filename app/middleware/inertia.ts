@@ -35,8 +35,19 @@ export const Inertia: InertiaInterface = {
     transform(): string {
         // Keeping it in a separate method in case we need to complicate it further
         const data = JSON.stringify({ ...this.data });
-        const body = `<div id="app" data-page='${data}'></div>`;
-        return this.template!.replace("@inertiaBody", body);
+        const template = this.template!.replace("{{data}}", data);
+
+        Deno.env.get("BUILD_ENV") !== 'prod' && template.replace(
+                '<script type="module" src="/js/main.ts"></script>',
+                "",
+            ).replace(
+                "<!-- dev-scripts -->",
+                `
+                    <script type="module" src="http://localhost:5173/@vite/client"></script>
+                    <script type="module" src="http://localhost:5173/js/main.ts"></script>
+                `,
+            );
+        return template;
     },
     // To be overriden in middleware
     render(): Response {
@@ -57,8 +68,8 @@ export const InertiaMiddleware = createMiddleware(async (c, next) => {
      * 2) This allows us to potentially load a different template depending on the request.
      */
     const templatePath = Deno.env.get("BUILD_ENV") === "prod"
-        ? "./public/index.html"
-        : "./resources/index.dev.html";
+        ? "./public/app.html"
+        : "./resources/app.html";
     Inertia.template ??= await Deno.readTextFile(templatePath);
 
     Inertia.render = <T>(component: string, props: T): Response => {

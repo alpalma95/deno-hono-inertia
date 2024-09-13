@@ -9,7 +9,11 @@ export default defineConfig({
     origin: 'http://localhost:8000'
   },
   build: {
-    outDir: '../public/'
+    outDir: '../public/',
+    assetsDir: 'dist_assets',
+    rollupOptions: {
+      input: './app.html'
+    }
   },
   
 })
